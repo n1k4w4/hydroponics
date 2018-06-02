@@ -1,15 +1,19 @@
 import urllib.request, json
 import MyPyDHT
+import smbus
 
 if __name__ == '__main__':
     url = "http://104.215.14.58:80/statuses/"
     method = "POST"
     humidity, temperature = MyPyDHT.sensor_read(MyPyDHT.Sensor.DHT22, 26)
+    bus = smbus.SMBus(1)
+    addr = 0x23
+    lux = bus.read_i2c_block_data(addr,0x10)
     obj = {
-            "temp" : str(temperature),
-            "hum" : str(humidity),
+            "temp" : temperature,
+            "hum" : humidity,
             "wtemp" : 15,
-            "lux" : 22,
+            "lux" : (lux[0]*256+lux[1])/1.2,
             "EC" : 15,
             "CO2" : 23,
             }
