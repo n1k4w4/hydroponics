@@ -1,6 +1,8 @@
 import urllib.request, json
 import MyPyDHT
 import smbus
+import getpass
+import hashlib
 
 if __name__ == '__main__':
     url = "http://104.215.14.58:80/statuses/"
@@ -17,7 +19,15 @@ if __name__ == '__main__':
             "EC" : 15,
             "CO2" : 23,
             }
-    json_data = json.dumps(obj).encode("utf-8")
+    p = getpass.getpass(prompt='Password : ')
+    h = hashlib.sha256(p.encode()).hexdigest()
+    print(h)
+    data = {
+            "username" : "dai",
+            "password" : h,
+            "statuses" : obj
+            }
+    json_data = json.dumps(data).encode("utf-8")
     headers = {"Content-Type" : "application/json"}
 
     request = urllib.request.Request(url, data=json_data, headers=headers, method=method)
